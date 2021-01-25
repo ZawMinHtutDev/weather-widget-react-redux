@@ -1,0 +1,77 @@
+:root {
+    --searchBoxBorderColor: rgb(71, 114, 255);
+    --searchButtonFocusColor: #1e7e34;
+    --cityWeatherBorderColor: #393f7b;
+}
+/* search box */
+.searchBox:focus {
+    border: 1px solid var(--searchBoxBorderColor) !important;
+    box-shadow: 0 0 5px var(--searchBoxBorderColor) !important;
+}
+
+/* search button */
+.searchButton {
+    background-color: transparent !important;
+    border: 1px solid #ddd !important;
+    color: #000 !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+}
+
+.searchButton:focus {
+    border: 1px solid var(--searchButtonFocusColor) !important;
+    box-shadow: 0 0 5px var(--searchButtonFocusColor) !important;
+}
+
+/* Placeholder for City Weather */
+.placeHolder {
+    height: 30vh;
+    background-color: #ddd;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* city weather */
+.weatherWrapper {
+    border: 3px solid var(--cityWeatherBorderColor);
+    border-radius: 5px;
+    padding: 20px;
+}
+/* Weather Staff */
+.weatherStaffWrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.weatherStaff {
+    display: flex;
+}
+.description, .value {
+    margin-bottom: 0;
+}
+.description {
+    min-width: 55px;
+    font-weight: 600;
+}
+.sperater {
+    padding: 0 5px;
+}
+.value {
+    padding-left: 5px;
+}
+/* foreCast */
+.foreCast {
+    width: 20%;
+    padding: 15px;
+    text-align: center;
+}
+/* City not found */
+.notFound {
+    text-align: center;
+    padding: 20px 0;
+    border: 3px solid var(--cityWeatherBorderColor);
+    border-radius: 5px;
+}
