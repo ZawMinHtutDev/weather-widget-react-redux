@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { Form, Input, Button } from "reactstrap";
 import modStyles from "./Weather.module.css";
 import { CityWeather } from "./CityWeather";
+import { fetchCurrentWeather, fetchWeatherForecast } from "./weatherSlice";
 
 export const Weather = () => {
   const [state, setState] = useState({
@@ -10,6 +12,8 @@ export const Weather = () => {
     isCityFound: null,
     isInitial: true,
   });
+  const weatherData = useSelector((state) => state.weather, shallowEqual);
+  const dispatch = useDispatch();
 
   /* store City to state */
   const handleTextChange = (e) => {
@@ -24,7 +28,11 @@ export const Weather = () => {
   const handleSubmit = () => {
     if (state.searchCity.length) {
       /* handling search box to make request to api */
-      console.log("querySending", state);
+      dispatch(fetchCurrentWeather(state.searchCity));
+      setState({
+        ...state,
+        isInitial: false,
+      });
     } else {
       /* handling empty search box */
       setState({
@@ -34,12 +42,36 @@ export const Weather = () => {
     }
   };
 
+  useEffect(() => {
+    if (weatherData.current && !weatherData.loading) {
+      if (!weatherData.forecast) {
+        dispatch(fetchWeatherForecast(weatherData.current.coord));
+      }
+
+      setState((preState) => ({
+        ...preState,
+        isCityFound: true,
+      }));
+    } else {
+      setState((preState) => ({
+        ...preState,
+        isCityFound: false,
+      }));
+    }
+  }, [weatherData, dispatch]);
+
   return (
     <div className="container">
       <div className="row justify-content-center">
         <div className="col-12 col-md-10 col-lg-6 px-md-0">
           {/* Form */}
-          <Form className="mb-3">
+          <Form
+            className="mb-3"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit();
+            }}
+          >
             <div className="row">
               {/* search box */}
               <div className="col-md-10 col-8 pr-0" id="searchText">
@@ -59,9 +91,7 @@ export const Weather = () => {
 
                 {state.isEmptySearch ? (
                   <p className="px-2 mb-0 text-danger">Must not be empty.</p>
-                ) : (
-                  <></>
-                )}
+                ) : null}
               </div>
 
               {/* search button */}
@@ -77,8 +107,12 @@ export const Weather = () => {
             </div>
           </Form>
 
-          {state.isCityFound == null ? (
-            
+          {weatherData.loading ? (
+            /* Loading */
+            <div className={modStyles.loadingWrapper}>
+              <div className={modStyles.loading} />
+            </div>
+          ) : state.isInitial ? (
             /* Placeholder for City Weather */
             <div className="row">
               <div className="col-12">
@@ -89,14 +123,12 @@ export const Weather = () => {
                 </div>
               </div>
             </div>
-
-          ) : state.isCityFound ? (
-
+          ) : state.isCityFound &&
+            weatherData.current &&
+            weatherData.forecast ? (
             /* City Weather */
-            <CityWeather props="something" />
-
+            <CityWeather props={weatherData} />
           ) : (
-
             /* City not found */
             <div className="row">
               <div className="col-12">
@@ -105,7 +137,6 @@ export const Weather = () => {
                 </div>
               </div>
             </div>
-
           )}
         </div>
       </div>

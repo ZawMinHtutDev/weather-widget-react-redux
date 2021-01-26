@@ -1,14 +1,55 @@
 import axios from "axios";
 
-const API_KEY = "567fb009055f8d8fddf69948130c088f";
+const Weather = axios.create({
+  baseURL: "https://api.openweathermap.org/data/2.5",
+  headers: {
+    "Content-Type": "application/json;charset=utf-8",
+  },
+});
+
+// const API_KEY = "567fb009055f8d8fddf69948130c088f";
+
+const API_KEY = "8987ec749d8441ea00a6a57cc07b8509";
 
 export default {
-    fetchCurrentWeather: ({ query }) =>
-        axios.get(
-            `https://api.openweathermap.org/data/2.5/weather?q=${query}&units=metric&appid=${API_KEY}`
-        ),
-    fetchWeatherForecast: ({ lat, lon }) =>
-        axios.get(
-            `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&units=metric&exclude=hourly,current&appid=${API_KEY}`
-        ),
+  fetchCurrentWeather: async (query) => {
+    try {
+        const res = await Weather.get("weather", {
+            params: {
+              q: query,
+              units: "metric",
+              appid: API_KEY,
+            },
+        });
+
+        return res;
+
+    } catch (err) {
+        console.clear();
+        console.log("Failed in making request for current Weather.\n",err.message);
+
+        return { data: null }
+    }
+  },
+  fetchWeatherForecast: async ({ lat, lon }) => {
+    try {
+      const res = await Weather.get("onecall", {
+        params: {
+          lat,
+          lon,
+          units: "metric",
+          exculde: ["hourly", "current"],
+          appid: API_KEY,
+        },
+      });
+    
+      return res;
+
+    } catch (err) {
+        console.clear();
+        console.log("Failed in making request for Weather Forecast => ", err.message);
+
+      return null;
+    }
+  },
 };

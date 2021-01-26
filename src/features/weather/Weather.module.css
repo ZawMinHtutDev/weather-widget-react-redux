@@ -44,7 +44,6 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
 }
 .weatherStaff {
     display: flex;
@@ -74,4 +73,35 @@
     padding: 20px 0;
     border: 3px solid var(--cityWeatherBorderColor);
     border-radius: 5px;
+}
+/* loading */
+@keyframes loading-twinkle {
+    0% {
+        width: 10px;
+        height: 10px;
+        opacity: 0.6;
+    }
+    60% {
+        width: 40px;
+        height: 40px;
+        opacity: 0.2;
+    }
+    100% {
+        width: 10px;
+        height: 10px;
+        opacity: 0.6;
+    }
+}
+.loadingWrapper {
+    height: 6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f4f5f7;
+    border-radius: 5px;
+}
+.loading {
+    border-radius: 100%;
+    background-color: #999;
+    animation: loading-twinkle infinite 1.5s ease-in-out;
 }
