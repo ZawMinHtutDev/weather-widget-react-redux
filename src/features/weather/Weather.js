@@ -42,6 +42,7 @@ export const Weather = () => {
     }
   };
 
+  /* following up for the weather data */
   useEffect(() => {
     if (weatherData.current && !weatherData.loading) {
       if (!weatherData.forecast) {

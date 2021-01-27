@@ -7,9 +7,7 @@ const Weather = axios.create({
   },
 });
 
-// const API_KEY = "567fb009055f8d8fddf69948130c088f";
-
-const API_KEY = "8987ec749d8441ea00a6a57cc07b8509";
+const API_KEY = "567fb009055f8d8fddf69948130c088f";
 
 export default {
   fetchCurrentWeather: async (query) => {
@@ -28,7 +26,7 @@ export default {
         console.clear();
         console.log("Failed in making request for current Weather.\n",err.message);
 
-        return { data: null }
+        return { data: null };
     }
   },
   fetchWeatherForecast: async ({ lat, lon }) => {
@@ -49,7 +47,7 @@ export default {
         console.clear();
         console.log("Failed in making request for Weather Forecast => ", err.message);
 
-      return null;
+      return { data: null };
     }
   },
 };

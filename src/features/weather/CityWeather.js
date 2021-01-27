@@ -1,5 +1,5 @@
 import moment from "moment";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import modStyles from "./Weather.module.css";
 
 export const CityWeather = ({ props }) => {
@@ -9,21 +9,48 @@ export const CityWeather = ({ props }) => {
   const sunrise = moment.unix(current.sys.sunrise).format("hh:mm a");
   const sunset = moment.unix(current.sys.sunset).format("hh:mm a");
 
+  /* preparing array of the next 5 days weather forecast */
   const forecastArr = forecast.daily
-    .filter((temp) => moment.unix(temp.dt).date() > moment().date())
-    .slice(0, 5);
+    ? forecast.daily
+        .filter(
+          (temp) =>
+            moment.unix(temp.dt).utc().toDate().setHours(0, 0, 0, 0) >
+            moment().utc().toDate().setHours(0,0,0,0)
+        )
+        .slice(0, 5)
+    : [];
 
-  const forecastList = forecastArr.map(item => (
+  /* preparing ui for the next 5 days weather forecast */
+  const forecastList = forecastArr.map((item) => (
     <div className={modStyles.foreCast} key={item.dt}>
-      <p className="text-uppercase mb-0 font-weight-bold">{moment.unix(item.dt).format("ddd")}</p>
+      <p className="text-uppercase mb-0 font-weight-bold">
+        {moment.unix(item.dt).format("ddd")}
+      </p>
       <img
-        src={"http://openweathermap.org/img/wn/" + item.weather[0].icon + ".png"}
+        src={
+          "http://openweathermap.org/img/wn/" + item.weather[0].icon + ".png"
+        }
         className="img-fluid"
         alt={"Open Weather Forecast " + item.weather[0].icon}
       />
       <p className="text-center mb-0">{Math.round(item.temp.day)}&deg;C</p>
     </div>
   ));
+
+  /* weather staff responsive */
+  const [matches, setMatches] = useState(window.matchMedia("(min-width: 768px)").matches);
+
+  const staffListener = () => {
+    setMatches(window.matchMedia("(min-width: 768px)").matches);
+  }
+  
+  useEffect(() => {
+    window.addEventListener("resize", staffListener);
+
+    return () => {
+      window.removeEventListener("resize", staffListener);
+    }
+  }, []);
 
   return (
     <div className="row">
@@ -51,17 +78,17 @@ export const CityWeather = ({ props }) => {
             <div
               className={`col-md-4 mt-md-0 mt-4 ${modStyles.weatherStaffWrapper}`}
             >
-              <div className={modStyles.weatherStaff}>
+              <div className={`${modStyles.weatherStaff} ${matches ? modStyles.mdWeatherStaff : ''}`}>
                 <p className={modStyles.description}>Wind</p>
                 <span className={modStyles.sperater}>:</span>
                 <p className={modStyles.value}>{current.wind.speed} m/s</p>
               </div>
-              <div className={modStyles.weatherStaff}>
+              <div className={`${modStyles.weatherStaff} ${matches ? modStyles.mdWeatherStaff : ''}`}>
                 <p className={modStyles.description}>Sunrise</p>
                 <span className={modStyles.sperater}>:</span>
                 <p className={modStyles.value}>{sunrise}</p>
               </div>
-              <div className={modStyles.weatherStaff}>
+              <div className={`${modStyles.weatherStaff} ${matches ? modStyles.mdWeatherStaff : ''}`}>
                 <p className={modStyles.description}>Sunset</p>
                 <span className={modStyles.sperater}>:</span>
                 <p className={modStyles.value}>{sunset}</p>
@@ -70,9 +97,7 @@ export const CityWeather = ({ props }) => {
           </div>
 
           {/* foreCast */}
-          <div className="row">
-            {forecastList}
-          </div>
+          <div className="row mt-4">{forecastList}</div>
         </div>
       </div>
     </div>
